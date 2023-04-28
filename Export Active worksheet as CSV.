@@ -1,2 +1,38 @@
 Prepare a macro to write a sheet named "abc"  as a csv file named "pqr.csv" in the folder "Desktop/suraj"
 
+
+Sub ExportABCAsCSV()
+    Dim FilePath As String
+    Dim ABCSheet As Worksheet
+    
+    'Set the path to save the file
+    FilePath = Environ("USERPROFILE") & "\Desktop\suraj\pqr.csv"
+    
+    'Disable display alerts and screen updating
+    Application.DisplayAlerts = False
+    Application.ScreenUpdating = False
+    
+    'Check if a worksheet named "abc" exists
+    On Error Resume Next
+    Set ABCSheet = Worksheets("abc")
+    If ABCSheet Is Nothing Then
+        MsgBox "Worksheet ""abc"" not found!", vbCritical
+        Exit Sub
+    End If
+    
+    'Copy the "abc" worksheet to a new workbook
+    ABCSheet.Copy
+    Set NewWB = ActiveWorkbook
+    
+    'Save the new workbook as CSV
+    With NewWB
+        .SaveAs Filename:=FilePath, FileFormat:=xlCSV, Local:=True
+        .Close SaveChanges:=False
+    End With
+    
+    'Re-enable display alerts and screen updating
+    Application.DisplayAlerts = True
+    Application.ScreenUpdating = True
+    
+    MsgBox "Worksheet ""abc"" exported to " & FilePath, vbInformation
+End Sub
